@@ -155,4 +155,8 @@ import java.util.List;
       return executeInternal(request);
     }
   }
+
+  /* package */ boolean disableHttpLibraryAutoUncompress() {
+    return externalInterceptors != null && externalInterceptors.size() > 0;
+  }
 }

@@ -71,6 +71,11 @@ import javax.net.ssl.HttpsURLConnection;
       connection.setRequestProperty(entry.getKey(), entry.getValue());
     }
 
+    // When URLConnection is powered by OkHttp, by adding this head, OkHttp will turn off its
+    // transparent decompress which will expose the raw network stream to our interceptors.
+    if (disableHttpLibraryAutoUncompress()) {
+      connection.setRequestProperty("Accept-encoding", "gzip");
+    }
     // Set body
     ParseHttpBody body = parseRequest.getBody();
     if (body != null) {

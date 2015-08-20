@@ -116,7 +116,9 @@ import java.util.Map;
     int statusCode = apacheResponse.getStatusLine().getStatusCode();
 
     // Content
-    InputStream content = AndroidHttpClient.getUngzippedContent(apacheResponse.getEntity());
+    InputStream content = disableHttpLibraryAutoUncompress() ?
+        apacheResponse.getEntity().getContent() :
+        AndroidHttpClient.getUngzippedContent(apacheResponse.getEntity());
 
     // Total size
     int totalSize = -1;
