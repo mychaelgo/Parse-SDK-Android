@@ -29,6 +29,7 @@ import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
@@ -194,10 +195,12 @@ import java.util.Map;
     ParseHttpBody body = parseRequest.getBody();
     switch (method) {
       case POST:
-        ((HttpPost) apacheRequest).setEntity(new ParseApacheHttpEntity(body));
+        ((HttpPost) apacheRequest).setEntity(
+            new BufferedHttpEntity(new ParseApacheHttpEntity(body)));
         break;
       case PUT:
-        ((HttpPut) apacheRequest).setEntity(new ParseApacheHttpEntity(body));
+        ((HttpPut) apacheRequest).setEntity(
+            new BufferedHttpEntity(new ParseApacheHttpEntity(body)));
         break;
       default:
         break;
