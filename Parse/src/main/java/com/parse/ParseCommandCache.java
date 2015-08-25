@@ -117,7 +117,7 @@ import bolts.Task;
           }
           return null;
         }
-      }, Task.BACKGROUND_EXECUTOR);
+      }, ParseExecutors.io());
     }
   };
 
