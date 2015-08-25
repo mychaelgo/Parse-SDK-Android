@@ -29,14 +29,13 @@ import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -93,6 +92,14 @@ import java.util.Map;
 
     ClientConnectionManager manager = new ThreadSafeClientConnManager(params, schemeRegistry);
     apacheClient = new DefaultHttpClient(manager, params);
+
+    // Disable retry logic by ApacheHttpClient. When we leave the app idle for 3 - 5 min, the next
+    // request will always fail with NoHttpResponseException: The target server failed to respond,
+    // in this situation, the Apache httpClient will try to retry the request,
+    // however, since we use InputStreamEntity which is non-repeatable, we will see the
+    // NonRepeatableRequestException: Cannot retry request with a non-repeatable request entity.
+    // We disable the retry logic by ApacheHttpClient to expose the real issue
+    apacheClient.setHttpRequestRetryHandler(new DefaultHttpRequestRetryHandler(0, false));
   }
 
   @Override
@@ -195,12 +202,10 @@ import java.util.Map;
     ParseHttpBody body = parseRequest.getBody();
     switch (method) {
       case POST:
-        ((HttpPost) apacheRequest).setEntity(
-            new BufferedHttpEntity(new ParseApacheHttpEntity(body)));
+        ((HttpPost) apacheRequest).setEntity(new ParseApacheHttpEntity(body));
         break;
       case PUT:
-        ((HttpPut) apacheRequest).setEntity(
-            new BufferedHttpEntity(new ParseApacheHttpEntity(body)));
+        ((HttpPut) apacheRequest).setEntity(new ParseApacheHttpEntity(body));
         break;
       default:
         break;
