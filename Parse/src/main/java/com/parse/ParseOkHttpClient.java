@@ -141,9 +141,9 @@ import okio.Okio;
 
     // Set Body
     ParseHttpBody parseBody = parseRequest.getBody();
-    CountingOkHttpRequestBody okHttpRequestBody = null;
+    ParseOkHttpRequestBody okHttpRequestBody = null;
     if(parseBody instanceof ParseByteArrayHttpBody) {
-      okHttpRequestBody = new CountingOkHttpRequestBody(parseBody);
+      okHttpRequestBody = new ParseOkHttpRequestBody(parseBody);
     }
     switch (method) {
       case PUT:
@@ -187,10 +187,8 @@ import okio.Okio;
     }
 
     // Set Body
-    if (okHttpRequest.body() instanceof CountingOkHttpRequestBody) {
-      CountingOkHttpRequestBody okHttpBody = (CountingOkHttpRequestBody) okHttpRequest.body();
-      parseRequestBuilder.setBody(okHttpBody.getParseHttpBody());
-    }
+    ParseOkHttpRequestBody okHttpBody = (ParseOkHttpRequestBody) okHttpRequest.body();
+    parseRequestBuilder.setBody(okHttpBody.getParseHttpBody());
     return parseRequestBuilder.build();
   }
 
@@ -274,11 +272,11 @@ import okio.Okio;
     });
   }
 
-  private static class CountingOkHttpRequestBody extends RequestBody {
+  private static class ParseOkHttpRequestBody extends RequestBody {
 
     private ParseHttpBody parseBody;
 
-    public CountingOkHttpRequestBody(ParseHttpBody parseBody) {
+    public ParseOkHttpRequestBody(ParseHttpBody parseBody) {
       this.parseBody = parseBody;
     }
 
