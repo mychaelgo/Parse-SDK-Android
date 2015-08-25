@@ -58,6 +58,11 @@ import java.util.Map;
       return self();
     }
 
+    public T addHeaders(Map<String, String> headers) {
+      this.headers.putAll(headers);
+      return self();
+    }
+
     public T addHeader(String key, String value) {
       this.headers.put(key, value);
       return self();

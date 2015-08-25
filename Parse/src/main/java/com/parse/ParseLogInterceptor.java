@@ -110,9 +110,9 @@ import bolts.Task;
 
   private static class ProxyInputStream extends InputStream {
     // Helper stream to proxy the original input stream to other input stream
-    InputStream originalInput;
-    PipedInputStream proxyInput;
-    PipedOutputStream proxyOutput;
+    private final InputStream originalInput;
+    private final PipedInputStream proxyInput;
+    private final PipedOutputStream proxyOutput;
 
     public ProxyInputStream(
         InputStream originalInput, final InterceptCallback callback) throws IOException {
@@ -177,7 +177,7 @@ import bolts.Task;
     } else if (contentType.contains("text")) {
       return new String(bytes).trim();
     } else {
-      return "Not supported contentType";
+      throw new IllegalStateException("We can not print this " + contentType);
     }
   }
 
