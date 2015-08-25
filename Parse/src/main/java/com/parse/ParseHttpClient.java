@@ -32,7 +32,6 @@ import java.util.List;
   private static final String MAX_CONNECTIONS_PROPERTY_NAME = "http.maxConnections";
   private static final String KEEP_ALIVE_PROPERTY_NAME = "http.keepAlive";
 
-
   public static ParseHttpClient createClient(int socketOperationTimeout,
       SSLSessionCache sslSessionCache) {
     String httpClientLibraryName;
@@ -156,6 +155,8 @@ import java.util.List;
     }
   }
 
+  // When we find developers use interceptors, since we need expose the raw response(ungziped
+  // response) to interceptors, we need to disable the transparent ungzip.
   /* package */ boolean disableHttpLibraryAutoUncompress() {
     return externalInterceptors != null && externalInterceptors.size() > 0;
   }
