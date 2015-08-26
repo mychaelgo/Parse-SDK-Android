@@ -111,8 +111,8 @@ import bolts.Task;
   private static class ProxyInputStream extends InputStream {
     // Helper stream to proxy the original input stream to other input stream
     private final InputStream originalInput;
-    private final PipedInputStream proxyInput;
-    private final PipedOutputStream proxyOutput;
+    private PipedInputStream proxyInput;
+    private PipedOutputStream proxyOutput;
 
     public ProxyInputStream(
         InputStream originalInput, final InterceptCallback callback) throws IOException {
