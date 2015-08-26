@@ -188,7 +188,9 @@ import okio.Okio;
 
     // Set Body
     ParseOkHttpRequestBody okHttpBody = (ParseOkHttpRequestBody) okHttpRequest.body();
-    parseRequestBuilder.setBody(okHttpBody.getParseHttpBody());
+    if (okHttpBody != null) {
+      parseRequestBuilder.setBody(okHttpBody.getParseHttpBody());
+    }
     return parseRequestBuilder.build();
   }
 
