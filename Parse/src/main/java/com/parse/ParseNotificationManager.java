@@ -37,12 +37,8 @@ import android.util.SparseIntArray;
     return Singleton.INSTANCE;
   }
   
-  private final Object lock = new Object();
   private final AtomicInteger notificationCount = new AtomicInteger(0);
   private volatile boolean shouldShowNotifications = true;
-  
-  // protected by object lock
-  private SparseIntArray iconIds = new SparseIntArray();
   
   public void setShouldShowNotifications(boolean show) {
     shouldShowNotifications = show;
@@ -50,37 +46,6 @@ import android.util.SparseIntArray;
   
   public int getNotificationCount() {
     return notificationCount.get();
-  }
-  
-  /*
-   * Notifications must be created with a valid drawable iconId resource, or NotificationManager
-   * will silently discard the notification. To help our clients, we check on the validity of the
-   * iconId before creating the Notification and log an error when provided an invalid id.
-   */ 
-  public boolean isValidIconId(Context context, int iconId) {
-    int valid;
-    
-    synchronized (lock) {
-      valid = iconIds.get(iconId, -1);
-    }
-    
-    if (valid == -1) {
-      Resources resources = context.getResources();
-      Drawable drawable = null;
-      
-      try {
-        drawable = resources.getDrawable(iconId);
-      } catch (NotFoundException e) {
-        // do nothing
-      }
-      
-      synchronized (lock) {
-        valid = (drawable == null) ? 0 : 1;
-        iconIds.put(iconId, valid);
-      }
-    }
-    
-    return valid == 1;
   }
   
   public void showNotification(Context context, Notification notification) {
